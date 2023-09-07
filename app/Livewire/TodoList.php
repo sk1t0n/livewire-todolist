@@ -55,6 +55,7 @@ class TodoList extends Component
             'completed' => false,
         ]);
 
+        $this->newTodo = '';
         $this->showForm = false;
     }
 }
