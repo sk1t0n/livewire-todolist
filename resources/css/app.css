@@ -5,3 +5,39 @@
 [x-cloak] {
     display: none;
 }
+
+.todolist-wrapper {
+    @apply p-4 w-2/3 mx-auto mt-10;
+}
+
+.todolist-title {
+    @apply text-2xl text-center font-bold;
+}
+
+.todolist-addtodobutton {
+    @apply bg-green-500 hover:bg-green-600 text-white p-2;
+}
+
+.todolist-addtodoform {
+    @apply my-4;
+}
+
+.todolist-addtodoform input {
+    @apply w-full;
+}
+
+.todolist + div {
+    @apply mt-10;
+}
+
+.todolist__li {
+    @apply flex justify-between my-2;
+}
+
+.todolist__input {
+    @apply mr-2;
+}
+
+.todolist__button {
+    @apply bg-red-500 hover:bg-red-600 text-white p-2;
+}
