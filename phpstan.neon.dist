@@ -1,0 +1,25 @@
+includes:
+	- ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+	level: 6
+	paths:
+		- app
+		- tests
+	ignoreErrors:
+		-
+			message: '#Undefined variable: \$this#'
+			paths:
+				- 'tests/*'
+		-
+			message: '#Access to an undefined property#'
+			paths:
+				- 'tests/*'
+		-
+			message: '#Call to an undefined method#'
+			paths:
+				- 'tests/*'
+	checkGenericClassInNonGenericObjectType: false
+	excludePaths:
+		- app/Actions/Fortify/*
+		- app/Actions/Jetstream/*
