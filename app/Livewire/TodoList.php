@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Models\TodoItem;
+use App\Services\TodoItemService;
 use Illuminate\View\View;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
@@ -21,24 +21,28 @@ class TodoList extends Component
     #[Rule('required')]
     public $newTodo = '';
 
+    private TodoItemService $todoItemService;
+
+    public function boot(TodoItemService $todoItemService): void
+    {
+        $this->todoItemService = $todoItemService;
+    }
+
     public function render(): View
     {
         return view('livewire.todo-list', [
-            'todoList' => TodoItem::paginate(self::TODOITEM_PER_PAGE),
+            'todoList' => $this->todoItemService->getAll(self::TODOITEM_PER_PAGE),
         ])->title(config('app.name'));
     }
 
     public function changeTodoItemStatus(int $id): void
     {
-        $todoItem = TodoItem::findOrFail($id);
-        $todoItem->update([
-            'completed' => ! $todoItem->completed,
-        ]);
+        $this->todoItemService->changeTodoItemStatus($id);
     }
 
     public function deleteTodoItem(int $id): void
     {
-        TodoItem::findOrFail($id)->delete();
+        $this->todoItemService->deleteTodoItem($id);
     }
 
     public function showFormAddTodo(): void
@@ -50,10 +54,7 @@ class TodoList extends Component
     {
         $this->validate();
 
-        TodoItem::create([
-            'title' => $this->newTodo,
-            'completed' => false,
-        ]);
+        $this->todoItemService->createTodoItem($this->newTodo);
 
         $this->newTodo = '';
         $this->showForm = false;
