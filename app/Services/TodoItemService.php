@@ -3,28 +3,33 @@
 namespace App\Services;
 
 use App\Models\TodoItem;
-use App\Repositories\TodoItemRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class TodoItemService
 {
-    public function __construct(private TodoItemRepository $todoItemRepository)
-    {
-    }
-
     public function getAll(int $perPage): LengthAwarePaginator
     {
-        $query = $this->todoItemRepository->findAll();
-
-        return $query->paginate($perPage);
+        return TodoItem::query()->select([
+            'id',
+            'title',
+            'completed',
+        ])->paginate($perPage);
     }
 
     public function changeTodoItemStatus(int $id): void
     {
-        $todoItem = $this->todoItemRepository->findById($id);
-        $todoItem->update([
-            'completed' => ! $todoItem->completed,
-        ]);
+        DB::transaction(function () use ($id) {
+            $todoItem = TodoItem::select([
+                'id',
+                'title',
+                'completed',
+            ])->lockForUpdate()->findOrFail($id);
+
+            $todoItem->update([
+                'completed' => ! $todoItem->completed,
+            ]);
+        });
     }
 
     public function deleteTodoItem(int $id): void
